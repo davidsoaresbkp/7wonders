@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7 Wonders Armada & Edifice</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, sans-serif;
+            text-align: center; 
+            padding: 15px; 
+            background-color: #0f172a; 
+            color: #f8fafc;
+            margin: 0;
+        }
+        .container { 
+            width: 100%;
+            max-width: 450px; 
+            margin: auto; 
+            background: #1e293b; 
+            padding: 25px 15px; 
+            border-radius: 24px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        h1 { color: #38bdf8; font-size: 1.4rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        h2 { color: #fbbf24; font-size: 1.1rem; margin: 20px 0 10px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        select { 
+            width: 100%;
+            padding: 14px; 
+            font-size: 1.1rem; 
+            margin-bottom: 20px; 
+            border-radius: 12px; 
+            border: 2px solid #38bdf8;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+
+        button { 
+            background: #38bdf8; 
+            color: #0f172a; 
+            font-weight: 800; 
+            width: 100%; 
+            padding: 18px;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px #075985;
+            margin-bottom: 10px;
+        }
+        button:active { transform: translateY(2px); box-shadow: 0 2px #075985; }
+
+        .section-title { color: #94a3b8; font-size: 0.8rem; text-align: left; margin: 15px 0 5px 5px; text-transform: uppercase; font-weight: bold;}
+
+        .card { 
+            background: #334155;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            text-align: left;
+            border-left: 4px solid #38bdf8;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .edifice-card {
+            background: #451a03; /* Tom marrom para edifícios */
+            border-left: 4px solid #fbbf24;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .row { display: flex; justify-content: space-between; align-items: center; }
+        .nav-tag { background: #0f172a; padding: 4px 10px; border-radius: 6px; color: #38bdf8; font-weight: bold; font-size: 0.9rem; }
+        .era-badge { background: #fbbf24; color: #451a03; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>7 Wonders</h1>
+    
+    <select id="players">
+        <option value="3" selected>3 Jogadores</option>
+        <option value="4">4 Jogadores</option>
+        <option value="5">5 Jogadores</option>
+        <option value="6">6 Jogadores</option>
+        <option value="7">7 Jogadores</option>
+    </select>
+    
+    <button onclick="sortear()">PLAY</button>
+
+    <div id="resultado"></div>
+</div>
+
+<script>
+const maravilhas = [
+    { n: "Halicarnasso", e: "🏛️" }, { n: "Éfeso", e: "💎" }, { n: "Babilônia", e: "🌿" },
+    { n: "Olimpia", e: "⚡" }, { n: "Rodes", e: "⚔️" }, { n: "Gizeh", e: "📐" },
+    { n: "Alexandria", e: "🏮" }, { n: "Roma", e: "🏟️" }, { n: "Abu Simbel", e: "⚰️" },
+    { n: "Siracusa", e: "🌊" }, { n: "Pétra", e: "🏜️" }, { n: "Bizâncio", e: "⛪" },
+    { n: "Ur", e: "📜" }, { n: "Cartago", e: "🐘" }
+];
+
+const edificios = {
+    era1: ["Belvedere", "Casa de Câmbio", "Distrito Artístico", "Muro Cortina", "Posto Avançado"],
+    era2: ["Anfiteatro", "Área de Treinamento", "Casa de Leilões", "Fábrica", "Porto Fluvial"],
+    era3: ["Ágora", "Arquivos", "Castelo Concêntrico", "Escola Militar", "Reserva de Ouro"]
+};
+
+function sortear() {
+    const n = parseInt(document.getElementById('players').value);
+    const resDiv = document.getElementById('resultado');
+    resDiv.innerHTML = ""; // Limpa resultados anteriores
+
+    // 1. SORTEIO DOS EDIFÍCIOS (COMUM)
+    const e1 = edificios.era1[Math.floor(Math.random() * 5)];
+    const e2 = edificios.era2[Math.floor(Math.random() * 5)];
+    const e3 = edificios.era3[Math.floor(Math.random() * 5)];
+
+    let edificHTML = `<h2>🏗️ Edifícios da Partida</h2>`;
+    [e1, e2, e3].forEach((ed, i) => {
+        edificHTML += `
+            <div class="edifice-card">
+                <span style="font-weight: 600;">${ed}</span>
+                <span class="era-badge">ERA ${i+1}</span>
+            </div>`;
+    });
+    resDiv.innerHTML += edificHTML;
+
+    // 2. SORTEIO DOS JOGADORES
+    resDiv.innerHTML += `<h2>🚢 Navegação e Maravilhas</h2>`;
+    
+    let listaMaravs = [...maravilhas].sort(() => Math.random() - 0.5);
+    let frotas = [1, 2, 3, 4, 5, 6, 7].sort(() => Math.random() - 0.5);
+
+    for (let i = 0; i < n; i++) {
+        const lado = Math.random() > 0.5 ? "☀️ Dia" : "🌙 Noite";
+        resDiv.innerHTML += `
+            <div class="card">
+                <div style="font-size: 0.7rem; color: #94a3b8; margin-bottom: 4px;">JOGADOR ${i+1}</div>
+                <div class="row">
+                    <span style="font-size: 1.1rem; font-weight: bold;">${listaMaravs[i].e} ${listaMaravs[i].n}</span>
+                    <span style="font-size: 0.8rem; opacity: 0.9;">${lado}</span>
+                </div>
+                <div class="row" style="margin-top: 10px; border-top: 1px solid #475569; padding-top: 8px;">
+                    <span style="font-size: 0.8rem; color: #cbd5e1;">Navegação Armada</span>
+                    <span class="nav-tag">⚓ Frota ${frotas[i]}</span>
+                </div>
+            </div>`;
+    }
+}
+</script>
+
+</body>
+</html>
